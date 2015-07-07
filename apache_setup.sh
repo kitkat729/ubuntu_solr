@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# test commit
+
 setup_root="_setup"
 [[ ! -s $setup_root ]] || rm -rf $setup_root
 mkdir $setup_root
