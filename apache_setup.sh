@@ -5,7 +5,7 @@ setup_root="_setup"
 mkdir $setup_root
 cd $setup_root
 
-#sudo apt-get update
+sudo apt-get update
 
 b_install_apache2=1
 apache2_distro_url="http://www.apache.org/dist/httpd/httpd-2.4.12.tar.gz"
