@@ -1,11 +1,13 @@
 #!/bin/bash
 
+. util.sh
+
 setup_root="_setup"
 [[ ! -s $setup_root ]] || rm -rf $setup_root
 mkdir $setup_root
 cd $setup_root
 
-# sudo apt-get update
+sudo apt-get update
 
 b_install_apache2=1
 apache2_distro_url="http://www.apache.org/dist/httpd/httpd-2.4.12.tar.gz"
@@ -33,46 +35,6 @@ pcre2_distro_url="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre2-10
 pcre2_signature_url="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre2-10.10.tar.gz.sig"
 pcre_keys_url="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/Public-Key"
 pcre_prefix="/usr/local/pcre"
-
-download() {
-   local file=$1 key_type=$2 keys=$3 signature=$4
-   wget $file
-
-   if [ ! "$keys" = '' ]; then
-     if verify_signature $key_type $keys $signature; then
-        return 0
-     else
-        return 1
-     fi
-   fi
-   return 0
-}
-
-#distro_fprint="A93D62ECC3C8EA12DB220EC934EA76E6791485A8"
-
-verify_signature() {
-  local key_type=$1 keys=$2 signature=$3 out=
-
-  case "$key_type" in
-    "gpg")
-      wget $keys
-      wget $signature
-      gpg --import $(basename $keys) >/dev/null 2>&1
-
-      if out=$(gpg --status-fd 1 --verify $(basename $signature) 2>/dev/null) &&
-        echo "$out" | grep -qs "^\[GNUPG:\] GOODSIG" &&
-        echo "$out" | grep -qs "^\[GNUPG:\] VALIDSIG"; then
-       #echo "$out" | grep -qs "^\[GNUPG:\] TRUST_ULTIMATE\$"; then
-        return 0
-      else
-        echo "$out" >&2
-        return 1
-      fi
-      ;;
-    *) return 0
-      ;;
-   esac
-}
 
 #if download $pcre_distro_url "gpg" $pcre_keys_url $pcre_signature_url; then
 #  #echo 'good pcre sig'
