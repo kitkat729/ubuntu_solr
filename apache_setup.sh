@@ -74,9 +74,6 @@ verify_signature() {
    esac
 }
 
-#unpack() {
-#
-#}
 
 #if download $pcre_distro_url "gpg" $pcre_keys_url $pcre_signature_url; then
 #  #echo 'good pcre sig'
