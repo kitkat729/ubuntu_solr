@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # This script setups the barebone services for a new box
-# sudo required.
 
 if [ ! -f ~/.bash_history ]; then
   touch ~/.bash_history
@@ -14,12 +13,12 @@ sudo apt-get upgrade
 sudo apt-get -y install build-essential build-dep checkinstall
 
 # common libs 
-apt-get install libpcre3 libpcre3-dev
-apt-get -y install zlib1g-dev
-apt-get -y install openssl
+sudo apt-get install libpcre3 libpcre3-dev
+sudo apt-get -y install zlib1g-dev
+sudo apt-get -y install openssl
 
 
 # remove orphan dependencies whose parent package had been removed
 house_cleaning() {
-  apt-get autoremove && apt-get autoclean
+  sudo apt-get autoremove && sudo apt-get autoclean
 }
