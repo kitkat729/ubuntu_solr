@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This script sets up solr a single instance mode, sets up java if it does not exist,
+# configure the new solr to a production-like instance
+
 # supports download from oracle only
 java_7_url='http://download.oracle.com/otn-pub/java/jdk/7u67-b01/jdk-7u67-linux-x64.tar.gz'
 java_8_url='http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jdk-8u45-linux-x64.tar.gz'
@@ -112,6 +115,8 @@ if ! check_solr && download $solr_distro_url; then
 	[[ ! $solr_service_port == '' ]] || solr_service_port="8983"
 
 	solr_dir=$(tar zft $(basename $solr_distro_url) | head -n1 | cut -f1 -d/)
+
+	# install_solr_service.sh will setup a production-like environment where application is separated from data and log
 	tar zxf $(basename $solr_distro_url) $solr_dir/bin/install_solr_service.sh --strip-components=2
 	sudo bash ./install_solr_service.sh $(basename $solr_distro_url) -i $solr_prefix -d $solr_home -u $solr_runas -s $solr_service_name -p $solr_service_port
 
@@ -123,6 +128,11 @@ if ! check_solr && download $solr_distro_url; then
 	# solr installed a service script at /etc/init.d/solr
 	# solr defaults SOLR_HEAP (Java Heap) to to 512M. In production, setting memory size to 10-20 GB is not uncommon. Do it at $solr_home/solr.in.sh
 	# SOLR_JAVA_MEM (not used by default) gives finer memory control over SOLR_HEAP
+
+	# @link https://cwiki.apache.org/confluence/display/solr/Solr+Start+Script+Reference#SolrStartScriptReference-SolrCloudMode
+	# solr may be setup as a cloud server where multiple solr can exist on a single machine using shards and replication
+	# cloud solr has a collection core. The collection core config gets copied to the Solr embedded Zookeeper to be shared among multiple collections.
+	# Embedded Zookeeper is not supported in production environment. You need to install Zookeeper(s) and map the host(s) separately
 
 	# operations:
 	# sudo service solr (start|stop|restart|status)
