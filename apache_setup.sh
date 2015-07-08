@@ -40,9 +40,7 @@ pcre_prefix="/usr/local/pcre"
 #  #echo 'good pcre sig'
 #  rm -rf $(basename $pcre_keys_url) $(basename $pcre_signature_url)
 #
-#  filename=$(basename $pcre_distro_url)
-#  filename=${filename%.*}
-#  pcre_dir=${filename%.*}
+#  pcre_dir=$(tar zft $(basename $pcre_distro_url) | head -n1 | cut -f1 -d/)
 #
 #  tar zxf $(basename $pcre_distro_url)
 #  if [ "$pcre_prefix" = '' ]; then
@@ -58,10 +56,7 @@ if download $aprutil_distro_url "gpg" $aprutil_keys_url $aprutil_signature_url; 
   #echo 'good aprutil sig'
   rm -rf $(basename $aprutil_keys_url) $(basename $aprutil_signature_url)
 
-  filename=$(basename $aprutil_distro_url)
-  filename=${filename%.*}
-  dir=${filename%.*}
-
+  #dir=$(tar zft $(basename $aprutil_distro_url) | head -n1 | cut -f1 -d/)
   tar zxf $(basename $aprutil_distro_url)
 fi
 
@@ -69,10 +64,7 @@ if download $apr_distro_url "gpg" $apr_keys_url $apr_signature_url; then
   #echo 'good apr sig'
   rm -rf $(basename $apr_keys_url) $(basename $apr_signature_url)
 
-  filename=$(basename $apr_distro_url)
-  filename=${filename%.*}
-  dir=${filename%.*}
-
+  #dir=$(tar zft $(basename $apr_distro_url) | head -n1 | cut -f1 -d/)
   tar zxf $(basename $apr_distro_url)
 fi
 
@@ -80,22 +72,15 @@ if download $apache2_distro_url "gpg" $apache2_keys_url $apache2_signature_url; 
   #echo 'good apache2 sig'
   rm -rf $(basename $apache2_keys_url) $(basename $apache2_signature_url)
 
-  filename=$(basename $apache2_distro_url)
-  filename=${filename%.*}
-  apache2_dir=${filename%.*}
-
+  apache2_dir=$(tar zft $(basename $apache2_distro_url) | head -n1 | cut -f1 -d/)
   tar zxf $(basename $apache2_distro_url)
 
   # copy apr and aprutil to srclib
-  filename=$(basename $apr_distro_url)
-  filename=${filename%.*}
-  apr_dir=${filename%.*}
+  apr_dir=$(tar zft $(basename $apr_distro_url) | head -n1 | cut -f1 -d/)
   mkdir -p $apache2_dir/srclib/apr
   cp -R $apr_dir/* $apache2_dir/srclib/apr/
 
-  filename=$(basename $aprutil_distro_url)
-  filename=${filename%.*}
-  aprutil_dir=${filename%.*}
+  aprutil_dir=$(tar zft $(basename $aprutil_distro_url) | head -n1 | cut -f1 -d/)
   mkdir -p $apache2_dir/srclib/apr-util
   cp -R $aprutil_dir/* $apache2_dir/srclib/apr-util/
 
