@@ -11,10 +11,11 @@ java_prefix="/usr/lib/jvm"
 
 solr_distro_url='http://mirror.symnds.com/software/Apache/lucene/solr/5.2.1/solr-5.2.1.tgz'
 solr_prefix="/opt"
-solr_home="/var/solr"
 solr_runas="ubuntu"
-solr_service_name="solr"
-solr_service_port="8983"
+# single solr instance with an id at a port
+solr_id="solr"
+solr_port="8983"
+solr_home="/var/$solr_id"
 
 . util.sh
 
@@ -109,18 +110,17 @@ if ! check_solr && download $solr_distro_url; then
 
 	# default settings
 	[[ ! $solr_prefix == '' ]] || solr_prefix="/opt"
-	[[ ! $solr_home == '' ]] || solr_home="/var/solr"
-	[[ ! $solr_runas == '' ]] || solr_home="solr"
-	[[ ! $solr_service_name == '' ]] || solr_service_name="solr"
-	[[ ! $solr_service_port == '' ]] || solr_service_port="8983"
+	[[ ! $solr_runas == '' ]] || $solr_runas="solr"
+	[[ ! $solr_id == '' ]] || solr_id="solr"
+	[[ ! $solr_port == '' ]] || solr_port="8983"
+	[[ ! $solr_home == '' ]] || solr_home="/var/$solr_id"
 
 	solr_dir=$(tar zft $(basename $solr_distro_url) | head -n1 | cut -f1 -d/)
+	tar zxf $(basename $solr_distro_url) $solr_dir/bin/install_solr_service.sh --strip-components=2
 
 	# install_solr_service.sh will setup a production-like environment where application is separated from data and log
-	tar zxf $(basename $solr_distro_url) $solr_dir/bin/install_solr_service.sh --strip-components=2
-	sudo bash ./install_solr_service.sh $(basename $solr_distro_url) -i $solr_prefix -d $solr_home -u $solr_runas -s $solr_service_name -p $solr_service_port
-
-	sudo service solr status
+	sudo bash ./install_solr_service.sh $(basename $solr_distro_url) -i $solr_prefix -d $solr_home -u $solr_runas -s $solr_id -p $solr_port
+	sudo service $solr_id status
 
 	# dev notes:
 	# @link https://cwiki.apache.org/confluence/display/solr/Taking+Solr+to+Production
