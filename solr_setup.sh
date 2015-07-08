@@ -13,6 +13,8 @@ solr_runas="ubuntu"
 solr_service_name="solr"
 solr_service_port="8983"
 
+. util.sh
+
 setup_root="_setup"
 [[ ! -s $setup_root ]] || rm -rf $setup_root
 mkdir $setup_root
@@ -23,22 +25,22 @@ b_install_jvm=0
 b_install_solr=0
 
 check_java() {
-	if [ "$(which java)" == '' ]; then
+	if [[ "$(which java)" == '' ]]; then
 		return 1
 	else
 		return 0
 	fi
 }
 
-check_jvm() {
+check_jre() {
 	local version= min_version=$1
 
-	if [ "$min_version" == '' ]; then
-		echo "check_jvm error: min version must be specified in order to compare with existing version"
+	if [[ "$min_version" == '' ]]; then
+		echo "check_jre error: the min version must be specified in order to compare with existing version"
 		exit 1
 	fi
 
-	if [ ! "$(which java)" == '' ] && version=$(echo $(java -version 2>&1) | awk 'NR==1{ gsub(/"/,""); print ($3)*1 }') && [ ! "$version" == '' ] && [ $(echo " $version >= $min_version" | bc) -eq 1 ]; then
+	if [[ ! "$(which java)" == '' ]] && version=$(echo $(java -version 2>&1) | awk 'NR==1{ gsub(/"/,""); print ($3)*1 }') && [ ! "$version" == '' ] && [ $(echo " $version >= $min_version" | bc) -eq 1 ]; then
 		#echo 'current version='$version
 		return 0
 	else
@@ -61,8 +63,8 @@ if ! check_java; then
 	wget --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" $java_distro_url
 	tar zxf $(basename $java_distro_url)
 
-	version_name=$(echo $(basename $java_distro_url 2>&1) | awk '{split($0,a,"-"); split(a[2],b,"u"); dir=a[1]"1."b[1]".0_"b[2]; print dir;}')
-	version_id=$(echo $(basename $java_distro_url 2>&1) | awk '{split($0,a,"-"); split(a[2],b,"u"); print b[1];}')
+	version_name=$(echo $(basename $java_distro_url) | awk '{split($0,a,"-"); split(a[2],b,"u"); dir=a[1]"1."b[1]".0_"b[2]; print dir;}')
+	version_id=$(echo $(basename $java_distro_url) | awk '{split($0,a,"-"); split(a[2],b,"u"); print b[1];}')
 	[[ ! -s $java_prefix/$version_name ]] || sudo rm -rf $java_prefix/$version_name
 	sudo mv $version_name $java_prefix
 	sudo chown -R root:root $java_prefix/$version_name
