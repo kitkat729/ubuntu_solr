@@ -45,7 +45,12 @@ check_jre() {
 }
 
 check_solr() {
-
+	# There is no better ways to detect solr but to check solr service
+	if [[ "$(sudo service solr status)" == "solr: unrecognized service" ]]; then
+		return 1
+	else
+		return 0	
+	fi
 }
 
 if ! check_java; then
