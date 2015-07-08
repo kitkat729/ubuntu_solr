@@ -11,7 +11,7 @@ download() {
    local file=$1 key_type=$2 keys=$3 signature=$4
    wget $file
 
-   if [ ! "$keys" = '' ]; then
+   if [ ! "$keys" == '' ]; then
      if verify_signature $key_type $keys $signature; then
         return 0
      else
