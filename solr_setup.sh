@@ -20,10 +20,6 @@ setup_root="_setup"
 mkdir $setup_root
 cd $setup_root
 
-b_install_java=0
-b_install_jvm=0
-b_install_solr=0
-
 check_java() {
 	if [[ "$(which java)" == '' ]]; then
 		return 1
@@ -56,7 +52,6 @@ if ! check_java; then
 	echo 'install java'
 
 	if [[ ! -s $java_prefix ]]; then
-		echo $java_prefix' does not exist'
 		sudo mkdir -p $java_prefix
 	fi
 
