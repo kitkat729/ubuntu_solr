@@ -96,4 +96,35 @@ fi
 if ! check_jvm '1.7'; then
 	echo 'jvm requirement unmet'
 	exit 1
+fifi
+
+if ! check_solr && download $solr_distro_url; then
+	echo 'Installing Solr'
+	# default settings
+	[[ ! $solr_prefix == '' ]] || solr_prefix="/opt"
+	[[ ! $solr_home == '' ]] || solr_home="/var/solr"
+	[[ ! $solr_runas == '' ]] || solr_home="solr"
+	[[ ! $solr_service_name == '' ]] || solr_service_name="solr"
+	[[ ! $solr_service_port == '' ]] || solr_service_port="8983"
+
+	solr_dir=$(tar zft $(basename $solr_distro_url) | head -n1 | cut -f1 -d/)
+	tar zxf $(basename $solr_distro_url) $solr_dir/bin/install_solr_service.sh --strip-components=2
+	sudo bash ./install_solr_service.sh $(basename $solr_distro_url) -i $solr_prefix -d $solr_home -u $solr_runas -s $solr_service_name -p $solr_service_port
+
+	sudo service solr status
+
+	# dev notes:
+	# @link https://cwiki.apache.org/confluence/display/solr/Taking+Solr+to+Production
+	# solr server config is stored at $solr_home/solr.in.sh
+	# solr installed a service script at /etc/init.d/solr
+	# solr defaults SOLR_HEAP (Java Heap) to to 512M. In production, setting memory size to 10-20 GB is not uncommon. Do it at $solr_home/solr.in.sh
+	# SOLR_JAVA_MEM (not used by default) gives finer memory control over SOLR_HEAP
+
+	# operations:
+	# sudo service solr (start|stop|restart|status)
+	#
+	# solr can also operate with just the solr script bin/solr from the Solr directory
+	# @link https://cwiki.apache.org/confluence/display/solr/Running+Solr
 fi
+
+echo 'Completed solr setup.'
