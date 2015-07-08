@@ -54,7 +54,10 @@ check_solr() {
 }
 
 if ! check_java; then
-	echo 'install java'
+	echo 'Installing Java'
+
+	#default settings
+	[[ ! $java_prefix == '' ]] || java_prefix="/usr/lib/jvm"
 
 	if [[ ! -s $java_prefix ]]; then
 		sudo mkdir -p $java_prefix
