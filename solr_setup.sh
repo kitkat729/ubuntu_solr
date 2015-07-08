@@ -103,7 +103,7 @@ fi
 
 if ! check_solr && download $solr_distro_url; then
 	echo 'Installing Solr'
-exit
+
 	# default settings
 	[[ ! $solr_prefix == '' ]] || solr_prefix="/opt"
 	[[ ! $solr_home == '' ]] || solr_home="/var/solr"
