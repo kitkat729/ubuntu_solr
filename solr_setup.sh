@@ -49,7 +49,7 @@ check_solr() {
 	if [[ "$(sudo service solr status)" == "solr: unrecognized service" ]]; then
 		return 1
 	else
-		return 0	
+		return 0
 	fi
 }
 
@@ -96,13 +96,14 @@ if ! check_java; then
 fi
 
 # this probably is unnecessary because java should have been installed by now
-if ! check_jvm '1.7'; then
-	echo 'jvm requirement unmet'
+if ! check_jre '1.7'; then
+	echo 'JRE requirement not met'
 	exit 1
-fifi
+fi
 
 if ! check_solr && download $solr_distro_url; then
 	echo 'Installing Solr'
+exit
 	# default settings
 	[[ ! $solr_prefix == '' ]] || solr_prefix="/opt"
 	[[ ! $solr_home == '' ]] || solr_home="/var/solr"
