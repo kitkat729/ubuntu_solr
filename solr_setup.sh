@@ -82,7 +82,7 @@ solr_config() {
 
 	# ref: run bin/solr delete -c <name> -p <port> [-deleteConfig (true|false)]
 
-	# A core should have been created by now. An empty private remote repo must have been created at git_repo_url
+	# A core should have been created by now. An empty private remote repo must have been created at a git handle
 	# git username and password may be required.
 	# Push the entire home folder to the git repo
 	cd $solr_instance_home
@@ -102,7 +102,7 @@ solr_config() {
 	git init --shared
 	git add .
 	git commit -m "initial commit. Added a new core"
-	git remote add origin $git_repo_url/$git_repo_name
+	git remote add origin $git_handle/$git_repo_name
 	git push origin master	# push working master to remote master
 }
 
