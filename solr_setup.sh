@@ -57,6 +57,55 @@ check_solr() {
 	fi
 }
 
+solr_config() {
+	local solr_instance_dir=$1 solr_instance_home=$2
+	#echo 'config standalone solr'
+
+	# make sure the instance is running to accept commands
+	$solr_instance_dir/bin/solr restart -p $solr_port
+
+	if [[ ! -f $solr_instance_home/solr.in.sh.orig ]]; then
+		cp $solr_instance_home/solr.in.sh $solr_instance_home/solr.in.sh.orig
+	fi
+
+	# @todo Find out why SOLR_HOST does not override the default setting
+	sed -i "/SOLR_HOST=\"$solr_host\"/d" $solr_instance_home/solr.in.sh
+	sed -i -r "s/^(SOLR_HOST=.*)/# \1/g" $solr_instance_home/solr.in.sh 	# bash sed uses -r instead of -e
+	echo "SOLR_HOST=\"$solr_host\"" >> $solr_instance_home/solr.in.sh
+
+	# Specs:
+	# Creates a standalone core using the default data_driven_schema without -d or -n options
+	# -d is the custom config directory (use data_driven_schema for now)
+	# -n is the config name (will be same as the core name)
+	solr_core='ih-articles'
+	$solr_instance_dir/bin/solr create -c $solr_core -p $solr_port
+
+	# ref: run bin/solr delete -c <name> -p <port> [-deleteConfig (true|false)]
+
+	# A core should have been created by now. An empty private remote repo must have been created at git_repo_url
+	# git username and password may be required.
+	# Push the entire home folder to the git repo
+	cd $solr_instance_home
+
+	if [[ -f .gitignore ]]; then
+		sed -i -r "/logs\/\*/d" .gitignore
+		sed -i -r "/data\/$solr_core\/data\/\*/d" .gitignore
+		sed -i -r "/\*\.pid/d" .gitignore
+	fi
+	echo "logs/*" >> .gitignore
+	echo "data/$solr_core/data/*" >> .gitignore
+	echo "*.pid" >> .gitignore
+
+	readme=''
+	echo "$readme" >> README.md
+
+	git init --shared
+	git add .
+	git commit -m "initial commit. Added a new core"
+	git remote add origin $git_repo_url/$git_repo_name
+	git push origin master	# push working master to remote master
+}
+
 if ! check_java; then
 	echo 'Installing Java'
 
