@@ -12,7 +12,7 @@ java_prefix="/usr/lib/jvm"
 solr_distro_url='http://mirror.symnds.com/software/Apache/lucene/solr/5.2.1/solr-5.2.1.tgz'
 solr_prefix="/opt"
 solr_runas="ubuntu"
-# single solr instance with an id at a port
+# config for a standalone instance named 'solr' at a port
 solr_id="solr"
 solr_port="8983"
 solr_home="/var/$solr_id"
