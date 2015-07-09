@@ -16,6 +16,10 @@ solr_runas="ubuntu"
 solr_id="solr"
 solr_port="8983"
 solr_home="/var/$solr_id"
+solr_host='ec2-54-198-62-180.compute-1.amazonaws.com'	# bare host name or ip
+
+git_handle='https://github.com/kitkat729'
+git_repo_name="ubuntu_solr_$solr_id"
 
 . util.sh
 
