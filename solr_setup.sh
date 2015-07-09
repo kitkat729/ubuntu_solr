@@ -171,6 +171,8 @@ if ! check_solr && download $solr_distro_url; then
 	sudo bash ./install_solr_service.sh $(basename $solr_distro_url) -i $solr_prefix -d $solr_home -u $solr_runas -s $solr_id -p $solr_port
 	sudo service $solr_id status
 
+	solr_config $solr_dir $solr_home
+
 	# dev notes:
 	# @link https://cwiki.apache.org/confluence/display/solr/Taking+Solr+to+Production
 	# solr server config is stored at $solr_home/solr.in.sh
@@ -188,6 +190,10 @@ if ! check_solr && download $solr_distro_url; then
 	#
 	# solr can also operate with just the solr script bin/solr from the Solr directory
 	# @link https://cwiki.apache.org/confluence/display/solr/Running+Solr
+else
+	# just config without installing solr
+	solr_dir="$solr_prefix/solr"
+	solr_config $solr_dir $solr_home
 fi
 
 echo 'Completed solr setup.'
