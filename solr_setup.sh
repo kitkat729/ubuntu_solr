@@ -65,9 +65,6 @@ solr_config() {
 	local solr_instance_dir=$1 solr_instance_home=$2
 	#echo 'config standalone solr'
 
-	# make sure the instance is running to accept commands
-	$solr_instance_dir/bin/solr restart -p $solr_port
-
 	if [[ ! -f $solr_instance_home/solr.in.sh.orig ]]; then
 		cp $solr_instance_home/solr.in.sh $solr_instance_home/solr.in.sh.orig
 	fi
@@ -76,6 +73,9 @@ solr_config() {
 	sed -i "/SOLR_HOST=\"$solr_host\"/d" $solr_instance_home/solr.in.sh
 	sed -i -r "s/^(SOLR_HOST=.*)/# \1/g" $solr_instance_home/solr.in.sh 	# bash sed uses -r instead of -e
 	echo "SOLR_HOST=\"$solr_host\"" >> $solr_instance_home/solr.in.sh
+
+	# make sure the instance is running to accept commands
+	$solr_instance_dir/bin/solr restart -p $solr_port -s $solr_instance_home
 
 	# Specs:
 	# Creates a standalone core using the default data_driven_schema without -d or -n options
