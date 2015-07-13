@@ -75,7 +75,7 @@ solr_config() {
 	echo "SOLR_HOST=\"$solr_host\"" >> $solr_instance_home/solr.in.sh
 
 	# make sure the instance is running to accept commands
-	# Important! Supplying -s "$solr_instance_home/data" is critical. It instantiates solr with the solr.xml stored at $solr_instance_home/data instead of the default solr.xml
+	# Important! Supplying -s "$solr_instance_home/data" is critical. It instantiates solr with the solr.xml stored at $solr_instance_home/data instead of the default at server/solr
 	$solr_instance_dir/bin/solr restart -p $solr_port -s "$solr_instance_home/data"
 
 	# Specs:
