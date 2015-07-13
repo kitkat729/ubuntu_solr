@@ -104,10 +104,13 @@ solr_config() {
 	readme=''
 	echo "$readme" >> README.md
 
+# Note. Because of the lack of checking, git will throw a fatal error if remote origin exist..but then will continue rewriting current master with the new master
+# find git origin: origin=$(git remote -v 2>&1)
+
 	git init --shared
+	git remote add origin $git_handle/$git_repo_name
 	git add .
 	git commit -m "initial commit. Added a new core"
-	git remote add origin $git_handle/$git_repo_name
 	git push origin master	# push working master to remote master
 }
 
