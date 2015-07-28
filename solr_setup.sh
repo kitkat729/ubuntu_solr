@@ -22,6 +22,7 @@ git_handle='https://github.com/kitkat729'
 git_repo_name="ubuntu_solr_$solr_id"
 
 . util.sh
+. solr_plugins.sh
 
 setup_root="_setup"
 [[ ! -s $setup_root ]] || rm -rf $setup_root
@@ -198,10 +199,20 @@ if ! check_solr && download $solr_distro_url; then
 	#
 	# solr can also operate with just the solr script bin/solr from the Solr directory
 	# @link https://cwiki.apache.org/confluence/display/solr/Running+Solr
+
+	install_solr_plugins
+
+	$solr_prefix/$solr_dir/bin/solr restart -p $solr_port -s "$solr_home/data"
 else
 	# just config without installing solr
 	solr_dir="$solr_prefix/solr"
 	solr_config $solr_dir $solr_home
+
+	install_solr_plugins
+
+	$solr_dir/bin/solr restart -p $solr_port -s "$solr_home/data"
 fi
+
+# todo Add ssl support
 
 echo 'Completed solr setup.'
