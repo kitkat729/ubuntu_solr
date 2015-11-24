@@ -1,9 +1,13 @@
 #!/bin/bash
 
 install_solr_plugins() {
-	#sudo apt-get -y install ant
+	if [[ $(dpkg --get-selections | grep ant) = '' ]]; then
+		sudo apt-get -y install ant
+	fi
 
-	# auto-phrase-tokenfilter
+	# @link http://lucidworks.com/blog/solution-for-multi-term-synonyms-in-lucenesolr-using-the-auto-phrasing-tokenfilter/
+	# auto-phrase-tokenfilter - contributed by LucidWorks
+	rm -rf auto-phrase-tokenfilter
 	git clone https://github.com/LucidWorks/auto-phrase-tokenfilter.git
 	cd auto-phrase-tokenfilter
 	settings='<ivysettings>
@@ -20,11 +24,14 @@ install_solr_plugins() {
 	echo $settings > ivy/ivy-settings.xml
 	ant
 
-	if [[ -s dist/auto-phrase-tokenfilter-1.0.jar ]]; then
-		if [[ ! -s $solr_home/lib ]]; then
-			mkdir $solr_home/lib
-		fi
+	if [[ ! -s $solr_home/data/lib ]]; then
+		mkdir $solr_home/data/lib
+	fi
 
-		cp dist/auto-phrase-tokenfilter-1.0.jar $solr_home/lib
+	if [[ -s dist/auto-phrase-tokenfilter-1.0.jar && ! -s $solr_home/data/lib/auto-phrase-tokenfilter-1.0.jar ]]; then
+		cp dist/auto-phrase-tokenfilter-1.0.jar $solr_home/data/lib
+
+		core='ih-articles' # temporary defined the core name here
+		touch $solr_home/data/$core/conf/autophrases.txt
 	fi
 }
