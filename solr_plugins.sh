@@ -1,6 +1,6 @@
 #!/bin/bash
 
-install_solr_plugins() {
+install_solr_plugins_from_source() {
 	if [[ $(dpkg --get-selections | grep ant) = '' ]]; then
 		sudo apt-get -y install ant
 	fi
@@ -33,5 +33,25 @@ install_solr_plugins() {
 
 		core='ih-articles' # temporary defined the core name here
 		touch $solr_home/data/$core/conf/autophrases.txt
+	fi
+}
+
+install_solr_plugins() {
+	path='./auto-phrase-tokenfilter'
+
+	if [[ ! -s $solr_home/data/lib ]]; then
+                mkdir $solr_home/data/lib
+        fi
+
+	if [[ ! -s $path/dist/auto-phrase-tokenfilter-1.0.jar ]]; then
+ 		echo 'auto-phrase-tokenfilter-1.0.jar does not exist'
+		exit 1
+	fi
+
+        if [[ -s $path/dist/auto-phrase-tokenfilter-1.0.jar && ! -s $solr_home/data/lib/auto-phrase-tokenfilter-1.0.jar ]]; then
+                cp $path/dist/auto-phrase-tokenfilter-1.0.jar $solr_home/data/lib
+
+                core='ih-articles' # temporary defined the core name here
+                touch $solr_home/data/$core/conf/autophrases.txt
 	fi
 }
