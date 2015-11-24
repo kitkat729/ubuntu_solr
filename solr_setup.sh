@@ -24,6 +24,9 @@ git_repo_name="ubuntu_solr_$solr_id"
 . util.sh
 . solr_plugins.sh
 
+echo 'This script needs to be re-evaluated especially the portion for just config without installing solr'
+exit 1
+
 setup_root="_setup"
 [[ ! -s $setup_root ]] || rm -rf $setup_root
 mkdir $setup_root
