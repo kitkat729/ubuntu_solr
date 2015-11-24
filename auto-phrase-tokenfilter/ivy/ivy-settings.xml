@@ -1,1 +1,11 @@
-<ivysettings> <settings defaultResolver="repo-chain"/> <resolvers> <ibiblio name="central" m2compatible="true"/> <ibiblio name="maven-restlet" root="http://maven.restlet.org/" m2compatible="true" /> <chain name="repo-chain"> <resolver ref="central"/> <resolver ref="maven-restlet"/> </chain> </resolvers> </ivysettings>
+<ivysettings>
+    <settings defaultResolver="repo-chain"/>
+    <resolvers>
+      <ibiblio name="central" m2compatible="true"/>
+      <ibiblio name="maven-restlet" root="http://maven.restlet.org/" m2compatible="true" />
+      <chain name="repo-chain">
+        <resolver ref="central"/>
+        <resolver ref="maven-restlet"/>
+      </chain>
+    </resolvers>
+</ivysettings>
